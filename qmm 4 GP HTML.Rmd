@@ -1,0 +1,61 @@
+---
+title: "Untitled"
+author: "joshna katta"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+The Research and Development Division of the Emax Corporation has developed three new products.
+
+Management wants consideration to three factors. Total Profit, Stability in the workforce and To increase in company’s earnings next year from the $75 million achieved this year.
+
+Now the decision now needs to be made on which mix of these products should be produced.
+
+Objective Function
+Maximize Z = P - 6C - 3D, where
+
+P = Total discounted profit over the life of the new products,
+C = Change in either direction towards the current level of employment,
+D = decrease if any in next year’s earnings from the current year’s level.
+Setting default values to get a clean output
+```{r}
+library(lpSolve)
+library(lpSolveAPI)
+
+```
+
+Loading the LP file from the current directory and printing the model
+Defining y1p and y1m as the amount over (if any) and the amount under (if any) the employment level goal.
+Defining y2p and y2m in the same way for the goal regarding earnings next year.
+Define x1, x2 and x3 as the production rates of Products 1, 2, and 3, respectively.
+Also expressing P in terms of x1, x2 and x3 and the objective function in terms of x1, x2, x3, y1p, y1m , y2p and y2m
+
+```{r}
+emax_rd <- read.lp("C:/Users/91995/Downloads/Emax1 (1).lp")
+print(emax_rd)
+emax_table <- matrix(c("Total Profit", "Employment Level", "Earnings Next Year",
+20,6,8,
+15,4,7,
+25,5,5,
+"Maximize","=50",">=75", "Millions of Dollars", "Hundreds of Employees", "Millions of Dollars"), ncol=6)
+colnames(emax_table) <- c("Factor","Product 1", "Product 2", "Product 3", "Goal", "Units")
+as.table(emax_table)
+solve(emax_rd)
+get.objective(emax_rd)
+get.variables(emax_rd)
+```
+
+*conclusion*
+1. According to the given answer, the firm can make 15 Units of Product 3 in order to maximize profit, however Product 1 and Product 2 cannot be produced.
+2. The firm's goal is to stabilize the employment level with a maximum of 50 hundred employees and achieve an increase in the next year's earnings from the current level. However, based on the above result, we can see that the firm added 25 hundred new employees, for which they must pay a penalty, and that "0" for y1+ and y1- in the earning column indicates that there will be no change in the earnings of the following year compared to the current year. As a result, the company owes no fines because earnings are stable.
+3. The company made 225 million dollars in profit.
